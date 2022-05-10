@@ -1,10 +1,17 @@
-import {Button} from './components/Button';
+import {Component, FC, ReactNode} from 'react';
+import {
+  Routes,
+  Route,
+} from "react-router-dom";
+import Config from './pages/Config'
 
-export function App() {
+
+const App = () => {
   return (
-    <>
-      <Button />
-      <h1>Hello world!</h1>
-    </>
+    <Routes>
+      <Route path="/" element={<Config/>}/>
+    </Routes>
   );
 }
+
+export default App;

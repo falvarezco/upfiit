@@ -1,4 +1,5 @@
 import {FC, useState} from 'react';
+import {lowerCase, capitalize} from 'lodash';
 import {
   ClockIcon,
   FireIcon,
@@ -15,10 +16,12 @@ const ICON_CLASSES = 'h-7x w-7 text-white';
 
 interface ConfigCardProps {
   icon: string;
-  title: string,
+  name: string,
   description: string,
+  value: number,
   onUpdate: Function,
 }
+
 // TODO: Test this
 const getIconComponent = (icon: string) => {
   switch (icon) {
@@ -38,10 +41,10 @@ const getIconComponent = (icon: string) => {
 }
 
 // TODO: Test this
-const ConfigCard: FC<ConfigCardProps> = ({icon, title, description, onUpdate}): JSX.Element => {
-  const hasInitializedVal: boolean = title === 'sets' || title === 'work' || title === 'excercises';
-  const [currentValue, setValue] = hasInitializedVal ? useState(1) : useState(0);
-  
+const ConfigCard: FC<ConfigCardProps> = ({icon, name, description, value, onUpdate}): JSX.Element => {
+  const hasInitializedVal: boolean = name === 'sets' || name === 'work' || name === 'excercises';
+  const [currentValue, setValue] = useState(value);
+  const cardTitle = capitalize(lowerCase(name));
   // TODO: Test this
   const buttonUpdateValue = (e: any, isMin?: boolean | undefined) => {
     e.preventDefault();
@@ -53,7 +56,7 @@ const ConfigCard: FC<ConfigCardProps> = ({icon, title, description, onUpdate}): 
       newValue = currentValue + 1;
     }
     setValue(newValue)
-    onUpdate(newValue);
+    onUpdate({name, newValue});
   }
 
   // TODO: Test this
@@ -67,14 +70,14 @@ const ConfigCard: FC<ConfigCardProps> = ({icon, title, description, onUpdate}): 
     }
 
     setValue(newValue);
-    onUpdate(newValue);
+    onUpdate({name, newValue});
   } 
 
   return (
     <div className="w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800 border border-slate-600 rounded">
       <header className='flex my-5'>
         {getIconComponent(icon)}
-        <h1 className="text-white text-3xl ml-2 capitalize select-none">{title}</h1>
+        <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>
       </header>
       <div className='flex justify-center space-x-4 items-center my-[35]'>
         <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e, true)}>

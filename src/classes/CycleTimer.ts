@@ -14,12 +14,14 @@ export default class CycleTimer {
 
   init() {
     this.timer && this.clear();
+    // Init Promise
     this.timer = setInterval(() => this.run(), 1000)
   }
 
   run() {
     if (this._seconds === 0) {
       return this.clear();
+      // Resolve   Promise
     }
     this.startTime = new Date().getTime();
     this._seconds = this._seconds - 1000;

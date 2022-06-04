@@ -1,21 +1,11 @@
 import {FC, useState} from 'react';
 import {lowerCase, capitalize} from 'lodash';
-import {
-  ClockIcon,
-  FireIcon,
-  LightningBoltIcon,
-  HandIcon,
-  RefreshIcon,
-  MinusIcon,
-  PlusIcon,
-} from '@heroicons/react/outline';
+import Icon from './Icon';
 
 const BUTTON_CLASSES = 'w-8 h-8 min-w-10 flex items-center justify-center hover:bg-slate-700 bg-slate-600 rounded-full transition ease-in-out delay-50 cursor-pointer';
 const BUTTON_ICON_CLASSES = 'stroke-teal-300';
-const ICON_CLASSES = 'h-7x w-7 text-white';
 
 interface ConfigCardProps {
-  icon: string;
   name: string,
   description: string,
   value: number,
@@ -23,28 +13,11 @@ interface ConfigCardProps {
 }
 
 // TODO: Test this
-const getIconComponent = (icon: string) => {
-  switch (icon) {
-    case 'clock':
-      return <ClockIcon className={ICON_CLASSES}/>
-    case 'fire':
-      return <FireIcon className={ICON_CLASSES}/>
-    case 'lightning':
-      return <LightningBoltIcon className={ICON_CLASSES}/>
-    case 'hand':
-      return <HandIcon className={ICON_CLASSES}/>
-    case 'refresh':
-      return <RefreshIcon className={ICON_CLASSES}/>
-    default:
-      return;
-  }
-}
-
-// TODO: Test this
-const ConfigCard: FC<ConfigCardProps> = ({icon, name, description, value, onUpdate}): JSX.Element => {
+const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): JSX.Element => {
   const hasInitializedVal: boolean = name === 'sets' || name === 'work' || name === 'excercises';
   const [currentValue, setValue] = useState(value);
   const cardTitle = capitalize(lowerCase(name));
+  const cardClasses = `w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800 border border-slate-600 rounded`;
   // TODO: Test this
   const buttonUpdateValue = (e: any, isMin?: boolean | undefined) => {
     e.preventDefault();
@@ -71,24 +44,26 @@ const ConfigCard: FC<ConfigCardProps> = ({icon, name, description, value, onUpda
 
     setValue(newValue);
     onUpdate({name, newValue});
-  } 
+  }
 
   return (
-    <div className="w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800 border border-slate-600 rounded">
+    <div className={cardClasses}>
       <header className='flex my-5'>
-        {getIconComponent(icon)}
+        <Icon iconName={name} />
         <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>
       </header>
       <div className='flex justify-center space-x-4 items-center my-[35]'>
         <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e, true)}>
-          <MinusIcon className={BUTTON_ICON_CLASSES}/>
+          <Icon iconName="minus" classes={BUTTON_ICON_CLASSES}/>
         </a>
-        <input className='flex-initial w-40 bg-transparent text-white text-6xl text-center focus:outline-none'
+        <input 
+          className='flex-initial w-40 bg-transparent text-white text-6xl text-center focus:outline-none'
           type="number" value={currentValue}
+          // onFocus={onCardSelected}
           onChange={(e) => inputUpdate(e)}/>
           {/* TODO: VALIDATE EMPTY VALUES */}
         <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e)}>
-          <PlusIcon className={BUTTON_ICON_CLASSES}/>
+          <Icon iconName="plus" classes={BUTTON_ICON_CLASSES}/>
         </a>
       </div>
       <p className='text-white text-center capitalize select-none'>{description}</p>

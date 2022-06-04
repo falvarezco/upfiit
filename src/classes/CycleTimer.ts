@@ -1,31 +1,42 @@
+
+const ONE_SEG: number = 1000;
+
 export default class CycleTimer {
   _name: string;
   startTime: number = 0;
   remaining: number = 0;
   timer: any = null;
   paused: boolean = false;
+  resolveTimer: Function | null;
   _seconds: number;
-  _callback: void;
+  _callback: Function;
 
-  constructor(name, seconds) {
+  constructor(name: string, seconds: number, callback: Function) {
     this._name = name;
     this._seconds = seconds;
+    this._callback = callback;
   }
 
   init() {
     this.timer && this.clear();
     // Init Promise
-    this.timer = setInterval(() => this.run(), 1000)
+    return new Promise((resolve: any) => {
+      if (!this.resolveTimer) {
+        this.resolveTimer = resolve;
+      }
+      this.timer = setInterval(() => this.run(), ONE_SEG)
+    });
   }
 
   run() {
-    if (this._seconds === 0) {
+    if (this._seconds === ONE_SEG) {
+      // Resolve Promise
+      this.resolveTimer(true);
       return this.clear();
-      // Resolve   Promise
     }
     this.startTime = new Date().getTime();
-    this._seconds = this._seconds - 1000;
-    console.log('TIME:', this._seconds);
+    this._seconds = this._seconds - ONE_SEG;
+    this._callback(this._seconds);
   }
 
   pause() {
@@ -39,11 +50,10 @@ export default class CycleTimer {
   resume() {
     if (this.paused) {
       if (this.remaining) {
-        setTimeout(() => {
-          this.paused = false;
-          this.run();
-          this.init();  
-        }, this.remaining)
+          setTimeout(() => {
+            this.paused = false;
+            this.init();
+          }, this.remaining)
       } else {
         this.paused = false;
         this.init();

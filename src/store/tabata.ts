@@ -1,10 +1,12 @@
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {totalMinutesStr, numberToSeg} from '../utils/timeTransformers';
+import * as _ from 'lodash';
+import {totalMinutesStr, numberToSeg, segsToNum} from '../utils/timeTransformers';
 
 // Shared Strings
 export const CONFIG_STATUS: string = 'CONFIG';
 export const WORK_STATUS: string = 'WORK';
+export const FINISHED_STATUS: string = 'FINISHED';
 export const PREPARATION: string = 'preparation';
 export const WORK: string = 'work';
 export const EXCERCISES: string = 'excercises';
@@ -12,14 +14,18 @@ export const REST_BT_EXCERCISES: string = 'restBetweenExcercises';
 export const SETS: string = 'sets';
 export const REST_BT_SETS: string = 'restBetweenSets';
 
+
+// Action Types
+export const FINISHED_TABATA = 'FINISHED_TABATA';
+
+// Todo Create more interfaces for the rest of the actions and move to /types
 interface UpdateValues {
   name: string, 
   newValue: number,
 }
 
-
 // Modifiers
-const getTotalTime = ({configValues}): string => {
+const getConfigTotalTime = ({configValues}): number => {
   const {
     preparation,
     work,
@@ -28,18 +34,19 @@ const getTotalTime = ({configValues}): string => {
     sets,
     restBetweenSets,
   } = configValues;
-  // TODO: FIX BUG IN CALC
+  // TODO: FIX BUG IN CALC --> Preparation multiplying values wrong
   const total = (preparation + (work * excercises) + (restBetweenExcercises * (excercises - 1)) + restBetweenSets) * sets;
-  return total ? totalMinutesStr(total) : '--:--';
+  return total;
 }
 
 // Initial State
-const initialState = { 
+const initialState = {
+  // status: WORK_STATUS,
   status: CONFIG_STATUS,
-  totalTime: totalMinutesStr(1),
-  currentSet: 1,
-  currentCycle: '',
-  numberOfExcercices: 1,
+  totalTime: 0,
+  currentSet: 0,
+  internalCyIndex: 0,
+  currentCycle: {},
   configValues: {
     [PREPARATION]: 0,
     [WORK]: 1,
@@ -48,7 +55,7 @@ const initialState = {
     [SETS]: 1,
     [REST_BT_SETS]: 0,
   },
-  workCycles: {},
+  workCycles: [],
 }
 
 // Reducer Slice
@@ -58,10 +65,11 @@ const tabataSlice = createSlice({
   reducers: {
     updateConfigValues: (state, {payload}: PayloadAction<UpdateValues>) => {
       state.configValues[payload.name] = payload.newValue;
-      state.totalTime = getTotalTime(state);
+      state.totalTime = getConfigTotalTime(state);
     },
-    initializeWork: (state) => {
-      state.status = WORK;
+    generateWorkCycles: (state) => {
+      // Change View to Work view mode
+      state.status = WORK_STATUS;
       // TABATA_ORDER
       const {
         preparation,
@@ -72,26 +80,67 @@ const tabataSlice = createSlice({
         restBetweenSets,
       } = state.configValues;
 
+      state.workCycles.push([{cycle: PREPARATION, time: numberToSeg(preparation)}]);
+
       for (let setCounter = 0; setCounter < sets; setCounter++) {
-        const currentSet = `set${setCounter + 1}`;
-        const intervals = [];
+        const currentSet = setCounter + 1;
+        const hasRestBetweenExcercises = restBetweenExcercises > 0;
+        const hasRestBetweenSets = restBetweenSets > 0 && currentSet < sets;
+        const workIntervals = [];
+
         for (let excerciseCounter = 0; excerciseCounter < excercises; excerciseCounter++) {
           if (excerciseCounter === excercises - 1) {
-            intervals.push({cycle: WORK, time: numberToSeg(work)});
-          } else {
-            intervals.push(
+            workIntervals.push(
               {cycle: WORK, time: numberToSeg(work)},
+            );
+          } else {
+            workIntervals.push(
+              {cycle: WORK, time: numberToSeg(work)},
+            );
+            hasRestBetweenExcercises && workIntervals.push(
               {cycle: REST_BT_EXCERCISES, time: numberToSeg(restBetweenExcercises)},
             );
           }
         }
-        state.workCycles.preparation = {cycle: PREPARATION, time: numberToSeg(preparation)};
-        state.workCycles.restBetweenSets = {cycle: REST_BT_SETS, time: numberToSeg(restBetweenSets)};
-        state.workCycles[currentSet] = intervals;
+        // add Rest Between Sets time if exist
+        if (hasRestBetweenSets) {
+          workIntervals.push({cycle: REST_BT_SETS, time: numberToSeg(restBetweenSets)});
+        }
+        state.workCycles.push(workIntervals);
       }
-    }
-  }
+      // If Preparation Has Zero time then move to initial work cycle
+      if (state.workCycles[0][0].time === 0) {
+        state.currentSet = 1;
+      }
+      state.currentCycle = state.workCycles[state.currentSet][state.internalCyIndex];
+    },
+    setCurrentCycle: (state, {payload}) => {
+      state.currentCycle = payload;
+    },
+    setInternalCyIndex: (state, {payload}) => {
+      state.internalCyIndex = payload;
+    },
+    setCurrentSet: (state, {payload}) => {
+      state.currentSet = payload;
+    },
+    setAppStatus: (state, {payload}) => {
+      state.status = payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(FINISHED_TABATA, (state, action) => {
+      return {...tabataSlice.getInitialState(), status: FINISHED_STATUS};
+    });
+  },
 });
 
-export const {updateConfigValues, initializeWork} = tabataSlice.actions;
+export const {
+  updateConfigValues,
+  generateWorkCycles,
+  setCurrentCycle,
+  setInternalCyIndex,
+  setCurrentSet,
+  setAppStatus,
+} = tabataSlice.actions;
+
 export default tabataSlice.reducer;

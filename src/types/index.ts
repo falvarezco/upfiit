@@ -6,3 +6,8 @@ export interface InitialConfig {
   sets: number,
   restBetweenSets: number,
 }
+
+export interface Cycle {
+  cycle: string,
+  time: number,
+}

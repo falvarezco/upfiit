@@ -1,29 +1,20 @@
 import {FC, useEffect, useRef, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../store';
-import {
-  setInternalCyIndex,
-  setCurrentCycle,
-  setCurrentSet,
-  PREPARATION,
-  FINISHED_TABATA,
-} from '../store/tabata';
+import {Cycle} from '../types';
+import {PREPARATION} from '../store/tabata';
 import {totalMinutesStr} from '../utils/timeTransformers';
 import CycleTimer from '../classes/CycleTimer';
-import { segsToNum } from '../utils/timeTransformers';
+import {segsToNum} from '../utils/timeTransformers';
+import tabataIterator from '../utils/tabataIterator';
 import WorkInterval from './WorkInterval';
 import Button from './Button';
-
-interface Cycle {
-  cycle: string,
-  time: number,
-}
 
 interface WorkViewProps {
   internalCyIndex: number,
   config?: any,
   cycles: any,
-  currentCycle: Cycle | any,
+  currentCycle: Cycle | null,
   currentSet: number,
   timeSummary: number,
   totalSets: number,
@@ -51,47 +42,6 @@ const WorkView: FC<WorkViewProps> = ({
   const onPauseTimer = () => cyTimer.current && cyTimer.current.pause();
   const onResumeTimer = () => cyTimer.current && cyTimer.current.resume();
   
-  const tabataIterator = (currentSetLength: number, cyIndex: number, resetNextCount: any) => {
-    let nextCy: any;
-    let nextSet: number;
-    let nextInternalIdx: number;
-    let isLastCy = false;
-
-    const incrementSet = () => nextSet = currentSet + 1;
-    const incrementCycle = () => nextInternalIdx = cyIndex + 1;
-    const setNewCycle = (set, cyIdx) => {
-      if (cycles[set]) {
-        nextCy = cycles[set][cyIdx];
-      } else {
-        isLastCy = true;
-      };
-    };
-
-    if (currentSetLength > 0) {
-      if (cyIndex < currentSetLength) {
-        incrementCycle();
-        setNewCycle(currentSet, nextInternalIdx);
-      } else {
-        nextInternalIdx = 0;
-        incrementSet();
-        setNewCycle(nextSet, nextInternalIdx)
-        dispatch(setCurrentSet(nextSet));
-      }
-    } else {
-      incrementSet();
-      nextInternalIdx = 0;
-      setNewCycle(nextSet, nextInternalIdx);
-      dispatch(setCurrentSet(nextSet));
-    }
-
-    if (isLastCy) {
-      return dispatch({type: FINISHED_TABATA});
-    }
-    
-    resetNextCount(nextCy.time);
-    dispatch(setInternalCyIndex(nextInternalIdx));
-    dispatch(setCurrentCycle(nextCy)); 
-  }
 
   useEffect(() => {
     // Initialize Cycle
@@ -101,7 +51,14 @@ const WorkView: FC<WorkViewProps> = ({
     .current
     .init()
     .then(() =>
-      tabataIterator(cycles[currentSet].length - 1, internalCyIndex, updateTimeCount)
+      tabataIterator(
+        cycles[currentSet].length - 1,
+        internalCyIndex,
+        updateTimeCount,
+        dispatch,
+        currentSet,
+        cycles,
+      )
     );
   }, [currentSet, internalCyIndex]);
 

@@ -1,23 +1,31 @@
-import {FC, useEffect, useRef, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../store';
-import {Cycle} from '../types';
-import {PREPARATION} from '../store/tabata';
-import {totalMinutesStr} from '../utils/timeTransformers';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { Cycle, InitialConfig } from '../types';
+import { PREPARATION } from '../store/tabata';
+import { totalMinutesStr } from '../utils/timeTransformers';
 import CycleTimer from '../classes/CycleTimer';
-import {segsToNum} from '../utils/timeTransformers';
+import { segsToNum } from '../utils/timeTransformers';
 import tabataIterator from '../utils/tabataIterator';
 import WorkInterval from './WorkInterval';
 import Button from './Button';
 
 interface WorkViewProps {
   internalCyIndex: number,
-  config?: any,
-  cycles: any,
+  config?: InitialConfig,
+  cycles: Array<[Cycle]>,
   currentCycle: Cycle | null,
   currentSet: number,
   timeSummary: number,
   totalSets: number,
+}
+
+interface CyTimer {
+  current: {
+    init: () => Promise<boolean>,
+    pause: () => void;
+    resume: () => void;
+  },
 }
 
 const WorkView: FC<WorkViewProps> = ({
@@ -29,7 +37,7 @@ const WorkView: FC<WorkViewProps> = ({
   totalSets,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const cyTimer:any = useRef();
+  const cyTimer:CyTimer = useRef();
   const totalTimeCount = useRef(timeSummary);
   const {cycle, time} = currentCycle;
   const [cyTimeCount, updateTimeCount] = useState(time);
@@ -41,7 +49,6 @@ const WorkView: FC<WorkViewProps> = ({
 
   const onPauseTimer = () => cyTimer.current && cyTimer.current.pause();
   const onResumeTimer = () => cyTimer.current && cyTimer.current.resume();
-  
 
   useEffect(() => {
     // Initialize Cycle

@@ -20,7 +20,7 @@ export default class CycleTimer {
   init() {
     this.timer && this.clear();
     // Init Promise
-    return new Promise((resolve: any) => {
+    return new Promise<boolean>((resolve) => {
       if (!this.resolveTimer) {
         this.resolveTimer = resolve;
       }

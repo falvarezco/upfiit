@@ -1,18 +1,18 @@
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import * as _ from 'lodash';
-import {totalMinutesStr, numberToSeg, segsToNum} from '../utils/timeTransformers';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { InitialState } from '../types';
+import { numberToSeg } from '../utils/timeTransformers';
 
 // Shared Strings
-export const CONFIG_STATUS: string = 'CONFIG';
-export const WORK_STATUS: string = 'WORK';
-export const FINISHED_STATUS: string = 'FINISHED';
-export const PREPARATION: string = 'preparation';
-export const WORK: string = 'work';
-export const EXCERCISES: string = 'excercises';
-export const REST_BT_EXCERCISES: string = 'restBetweenExcercises';
-export const SETS: string = 'sets';
-export const REST_BT_SETS: string = 'restBetweenSets';
+export const CONFIG_STATUS = 'CONFIG';
+export const WORK_STATUS = 'WORK';
+export const FINISHED_STATUS = 'FINISHED';
+export const PREPARATION = 'preparation';
+export const WORK = 'work';
+export const EXCERCISES = 'excercises';
+export const REST_BT_EXCERCISES = 'restBetweenExcercises';
+export const SETS = 'sets';
+export const REST_BT_SETS = 'restBetweenSets';
 
 
 // Action Types
@@ -40,13 +40,12 @@ const getConfigTotalTime = ({configValues}): number => {
 }
 
 // Initial State
-const initialState = {
-  // status: WORK_STATUS,
+const initialState: InitialState = {
   status: CONFIG_STATUS,
   totalTime: 0,
   currentSet: 0,
   internalCyIndex: 0,
-  currentCycle: {},
+  currentCycle: null,
   configValues: {
     [PREPARATION]: 0,
     [WORK]: 1,
@@ -128,8 +127,11 @@ const tabataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(FINISHED_TABATA, (state, action) => {
-      return {...tabataSlice.getInitialState(), status: FINISHED_STATUS};
+    builder.addCase(FINISHED_TABATA, () => {
+      return {
+        ...tabataSlice.getInitialState(),
+        status: FINISHED_STATUS
+      };
     });
   },
 });

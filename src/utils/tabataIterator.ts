@@ -1,3 +1,4 @@
+import {Dispatch, SetStateAction} from 'react';
 import {AppDispatch} from '../store';
 import {Cycle} from '../types';
 import {
@@ -6,12 +7,11 @@ import {
   setCurrentSet,
   FINISHED_TABATA,
 } from '../store/tabata';
-
 // TODO: Test this
 const tabataIterator = (
   currentSetLength: number,
   cyIndex: number,
-  resetNextCount: Function,
+  resetNextCount: Dispatch<SetStateAction<number>>,
   dispatch: AppDispatch,
   currentSet: number,
   cycles: Array<[Cycle]>,
@@ -19,7 +19,7 @@ const tabataIterator = (
   let nextCy: Cycle;
   let nextSet: number;
   let nextInternalIdx: number;
-  let isLastCy: boolean = false;
+  let isLastCy = false;
 
   const incrementSet = () => nextSet = currentSet + 1;
   const incrementCycle = () => nextInternalIdx = cyIndex + 1;
@@ -28,7 +28,7 @@ const tabataIterator = (
       nextCy = cycles[set][cyIdx];
     } else {
       isLastCy = true;
-    };
+    }
   };
 
   if (currentSetLength > 0) {

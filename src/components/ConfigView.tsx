@@ -1,8 +1,14 @@
-import {EventHandler, FC, MouseEvent} from 'react';
+import React, { EventHandler, FC, MouseEvent } from 'react';
+import { InitialConfig } from '../types';
+import { totalMinutesStr } from '../utils/timeTransformers';
+import APP_STRINGS from '../strings';
 import ConfigCard from './ConfigCard';
 import Button from './Button';
-import {totalMinutesStr} from '../utils/timeTransformers';
-import APP_STRINGS from '../strings';
+
+export interface NewValue {
+  name: string,
+  newValue: number,
+}
 
 const {
   cards,
@@ -12,9 +18,8 @@ const {
 
 interface ConfigViewProps {
   timeSummary: number,
-  // TODO: update data to specific type
-  data: any,
-  onCardUpdate: Function,
+  data: InitialConfig,
+  onCardUpdate: (value: NewValue) => void,
   onWorkInit: EventHandler<MouseEvent>,
 }
 
@@ -25,7 +30,8 @@ const ConfigView: FC<ConfigViewProps> = ({
   onWorkInit,
 }) => (
   <>
-    <h1 className="text-white my-5 select-none">
+    <h1 className='text-white my-5 select-none'>
+      {/* TODO: Move this to utils, this line too long */}
       {`${totalTimeStr} ${Number.isNaN(timeSummary) || timeSummary === 0 ? '--:--' : totalMinutesStr(timeSummary)}`}
     </h1>
     <form className='mb-20 mt-5 w-10/12 grid grid-cols-3 gap-3'>

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   updateConfigValues,
   generateWorkCycles,
@@ -32,7 +33,7 @@ const App = () => {
 
   return (
     <Layout>
-      {status === CONFIG_STATUS && status !== FINISHED_STATUS &&
+      {status === CONFIG_STATUS &&
         <ConfigView
           timeSummary={totalTime}
           onCardUpdate={onHandleConfigUpdate}
@@ -40,7 +41,7 @@ const App = () => {
           data={configValues}
         />
       }
-      {status === WORK_STATUS && status !== FINISHED_STATUS &&
+      {status === WORK_STATUS &&
         <WorkView 
           currentCycle={currentCycle}
           cycles={workCycles}
@@ -51,7 +52,7 @@ const App = () => {
           totalSets={configValues.sets}
         />
       }
-      {status === FINISHED_STATUS && status !== (WORK_STATUS || CONFIG_STATUS) && 
+      {status === FINISHED_STATUS &&
         <FinishedTabata>
           <Button onButtonClick={onCreateAnotherTabata}>Create Another Tabata</Button>
         </FinishedTabata>

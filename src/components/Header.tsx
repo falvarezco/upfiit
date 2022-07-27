@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 const Header: FC = (): JSX.Element => (
   <header className="w-full dark:bg-slate-800 h-20 flex items-center justify-center">

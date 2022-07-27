@@ -1,15 +1,26 @@
-import {FC, useState} from 'react';
-import {lowerCase, capitalize} from 'lodash';
+import React, { FC, useState, MouseEvent, ChangeEvent } from 'react';
+import { lowerCase, capitalize } from 'lodash';
+import { NewValue } from './ConfigView';
 import Icon from './Icon';
 
-const BUTTON_CLASSES = 'w-8 h-8 min-w-10 flex items-center justify-center hover:bg-slate-700 bg-slate-600 rounded-full transition ease-in-out delay-50 cursor-pointer';
+const BUTTON_CLASSES = `
+  w-8 h-8 min-w-10 flex items-center justify-center
+  hover:bg-slate-700 bg-slate-600 rounded-full transition ease-in-out
+  delay-50 cursor-pointer
+`;
+
 const BUTTON_ICON_CLASSES = 'stroke-teal-300';
+
+const CARD_CLASSES = `
+  w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800
+  border border-slate-600 rounded
+`;
 
 interface ConfigCardProps {
   name: string,
   description: string,
   value: number,
-  onUpdate: Function,
+  onUpdate: (value: NewValue) => void,
 }
 
 // TODO: Test this
@@ -17,9 +28,8 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
   const hasInitializedVal: boolean = name === 'sets' || name === 'work' || name === 'excercises';
   const [currentValue, setValue] = useState(value);
   const cardTitle = capitalize(lowerCase(name));
-  const cardClasses = `w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800 border border-slate-600 rounded`;
   // TODO: Test this
-  const buttonUpdateValue = (e: any, isMin?: boolean | undefined) => {
+  const buttonUpdateValue = (e: MouseEvent<HTMLButtonElement, MouseEvent>, isMin?: boolean | undefined) => {
     e.preventDefault();
     let newValue: number;
 
@@ -33,7 +43,8 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
   }
 
   // TODO: Test this
-  const inputUpdate = ({target: {value}}: any) => {
+  const inputUpdate = (e: ChangeEvent<HTMLInputElement>) => {
+    const {target: {value}} = e;
     let newValue: number;
 
     if (value === '0' && hasInitializedVal) {
@@ -47,7 +58,7 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
   }
 
   return (
-    <div className={cardClasses}>
+    <div className={CARD_CLASSES}>
       <header className='flex my-5'>
         <Icon iconName={name} />
         <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>

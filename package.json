@@ -8,14 +8,12 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build",
-    "lint": "eslint"
+    "build": "parcel build index.html --no-source-maps",
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "autoprefixer": "^10.4.7",
-    "eslint": "^8.17.0",
     "lodash": "^4.17.21",
     "parcel": "^2.5.0",
     "postcss": "^8.4.13",
@@ -28,6 +26,7 @@
     "react-dom": "^18.1.0",
     "react-redux": "^8.0.1",
     "redux-thunk": "^2.4.1",
+    "typescript": "^4.7.3",
     "use-state-with-callback": "^3.0.2"
   }
 }

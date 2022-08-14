@@ -3,25 +3,25 @@
   "source": "src/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Felipe Alvarez",
   "license": "MIT",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build index.html --no-source-maps"
+    "build": "parcel build src/index.html --no-source-maps"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "autoprefixer": "^10.4.7",
-    "lodash": "^4.17.21",
-    "parcel": "^2.5.0",
+    "parcel": "latest",
     "postcss": "^8.4.13",
     "tailwindcss": "^3.0.24"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.8.1",
+    "@swc/helpers": "^0.4.6",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-redux": "^8.0.1",

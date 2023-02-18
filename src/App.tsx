@@ -7,8 +7,8 @@ import {
   WORK_STATUS,
   FINISHED_STATUS,
 } from './store/tabata';
-import {RootState} from './store';
-import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from './store';
+import { useSelector, useDispatch } from 'react-redux';
 import ConfigView from './components/ConfigView';
 import FinishedTabata from './components/FinishedTabata';
 import WorkView from './components/WorkView';
@@ -24,7 +24,7 @@ const App = () => {
     totalTime,
     currentCycle,
     currentSet,
-  } = useSelector(({tabataState}: RootState) => tabataState);
+  } = useSelector(({ tabataState }: RootState) => tabataState);
 
   const dispatch = useDispatch();
   const onHandleConfigUpdate = ({name, newValue}) => dispatch(updateConfigValues({name, newValue}));
@@ -42,7 +42,7 @@ const App = () => {
         />
       }
       {status === WORK_STATUS &&
-        <WorkView 
+        <WorkView
           currentCycle={currentCycle}
           cycles={workCycles}
           config={configValues}

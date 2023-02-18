@@ -1,6 +1,6 @@
-import {Dispatch, SetStateAction} from 'react';
-import {AppDispatch} from '../store';
-import {Cycle} from '../types';
+import { Dispatch, SetStateAction } from 'react';
+import { AppDispatch } from '../store';
+import { Cycle } from '../types';
 import {
   setInternalCyIndex,
   setCurrentCycle,
@@ -16,16 +16,17 @@ const tabataIterator = (
   currentSet: number,
   cycles: Array<[Cycle]>,
 ) => {
-  let nextCy: Cycle;
+  let nextCycle: Cycle;
   let nextSet: number;
   let nextInternalIdx: number;
   let isLastCy = false;
 
   const incrementSet = () => nextSet = currentSet + 1;
   const incrementCycle = () => nextInternalIdx = cyIndex + 1;
+
   const setNewCycle = (set, cyIdx) => {
     if (cycles[set]) {
-      nextCy = cycles[set][cyIdx];
+      nextCycle = cycles[set][cyIdx];
     } else {
       isLastCy = true;
     }
@@ -52,9 +53,9 @@ const tabataIterator = (
     return dispatch({type: FINISHED_TABATA});
   }
 
-  resetNextCount(nextCy.time);
+  resetNextCount(nextCycle.time);
   dispatch(setInternalCyIndex(nextInternalIdx));
-  dispatch(setCurrentCycle(nextCy));
+  dispatch(setCurrentCycle(nextCycle));
 }
 
 export default tabataIterator;

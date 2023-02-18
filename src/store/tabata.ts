@@ -1,22 +1,20 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { InitialState } from '../types';
+import { InitialState, Cycle } from '../types';
 import { numberToSeg } from '../utils/timeTransformers';
 
 // Shared Strings
-export const CONFIG_STATUS = 'CONFIG';
-export const WORK_STATUS = 'WORK';
-export const FINISHED_STATUS = 'FINISHED';
-export const PREPARATION = 'preparation';
-export const WORK = 'work';
-export const EXCERCISES = 'excercises';
+export const CONFIG_STATUS      = 'CONFIG';
+export const WORK_STATUS        = 'WORK';
+export const FINISHED_STATUS    = 'FINISHED';
+export const PREPARATION        = 'preparation';
+export const WORK               = 'work';
+export const EXCERCISES         = 'excercises';
 export const REST_BT_EXCERCISES = 'restBetweenExcercises';
-export const SETS = 'sets';
-export const REST_BT_SETS = 'restBetweenSets';
-
-
+export const SETS               = 'sets';
+export const REST_BT_SETS       = 'restBetweenSets';
 // Action Types
-export const FINISHED_TABATA = 'FINISHED_TABATA';
+export const FINISHED_TABATA    = 'FINISHED_TABATA';
 
 // Todo Create more interfaces for the rest of the actions and move to /types
 interface UpdateValues {
@@ -25,6 +23,7 @@ interface UpdateValues {
 }
 
 // Modifiers
+// TODO: Add stronger typing to this method (e.g return number in format 00:00)
 const getConfigTotalTime = ({configValues}): number => {
   const {
     preparation,
@@ -42,11 +41,13 @@ const getConfigTotalTime = ({configValues}): number => {
 // Initial State
 const initialState: InitialState = {
   status: CONFIG_STATUS,
+  sound: null,
   totalTime: 0,
   currentSet: 0,
   internalCyIndex: 0,
   currentCycle: null,
   configValues: {
+    // Values are in seconds
     [PREPARATION]: 0,
     [WORK]: 1,
     [EXCERCISES]:1,
@@ -62,8 +63,9 @@ const tabataSlice = createSlice({
   name: 'tabata',
   initialState,
   reducers: {
-    updateConfigValues: (state, {payload}: PayloadAction<UpdateValues>) => {
-      state.configValues[payload.name] = payload.newValue;
+    updateConfigValues: (state, { payload }: PayloadAction<UpdateValues>) => {
+      const { name, newValue } = payload;
+      state.configValues[name] = newValue;
       state.totalTime = getConfigTotalTime(state);
     },
     generateWorkCycles: (state) => {
@@ -85,13 +87,15 @@ const tabataSlice = createSlice({
         const currentSet = setCounter + 1;
         const hasRestBetweenExcercises = restBetweenExcercises > 0;
         const hasRestBetweenSets = restBetweenSets > 0 && currentSet < sets;
-        const workIntervals = [];
+        const workIntervals: Cycle[] = [];
 
         for (let excerciseCounter = 0; excerciseCounter < excercises; excerciseCounter++) {
+          // Is the last one
           if (excerciseCounter === excercises - 1) {
             workIntervals.push(
               {cycle: WORK, time: numberToSeg(work)},
             );
+          // Is a work excercise at the middle of the list (takes into account rest time in between)
           } else {
             workIntervals.push(
               {cycle: WORK, time: numberToSeg(work)},
@@ -101,11 +105,11 @@ const tabataSlice = createSlice({
             );
           }
         }
-        // add Rest Between Sets time if exist
+        // Add Rest Between Sets time if exist
         if (hasRestBetweenSets) {
           workIntervals.push({cycle: REST_BT_SETS, time: numberToSeg(restBetweenSets)});
         }
-        state.workCycles.push(workIntervals);
+        state.workCycles.push(workIntervals as any);
       }
       // If Preparation Has Zero time then move to initial work cycle
       if (state.workCycles[0][0].time === 0) {

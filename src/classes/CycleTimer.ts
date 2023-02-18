@@ -31,7 +31,7 @@ export default class CycleTimer {
   run() {
     if (this._seconds === ONE_SEG) {
       // Resolve Promise
-      this.resolveTimer(true);
+      this.resolveTimer(0);
       return this.clear();
     }
     this.startTime = new Date().getTime();

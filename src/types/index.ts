@@ -14,6 +14,7 @@ interface Cycle {
 
 interface InitialState {
   status: string,
+  sound: null,
   totalTime: number,
   currentSet: number,
   internalCyIndex: number,

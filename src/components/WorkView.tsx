@@ -9,12 +9,15 @@ import { segsToNum } from '../utils/timeTransformers';
 import tabataIterator from '../utils/tabataIterator';
 import WorkInterval from './WorkInterval';
 import Button from './Button';
+// Audio
+import startDing from '../audio/start-ding.mp3';
+import startFinalDing from '../audio/start-final-ding.mp3';
 
 interface WorkViewProps {
   internalCyIndex: number,
   config?: InitialConfig,
   cycles: Array<[Cycle]>,
-  currentCycle: Cycle | null,
+  currentCycle: Cycle | any,
   currentSet: number,
   timeSummary: number,
   totalSets: number,
@@ -37,12 +40,25 @@ const WorkView: FC<WorkViewProps> = ({
   totalSets,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const cyTimer:CyTimer = useRef();
+  const cyTimer: CyTimer = useRef();
   const totalTimeCount = useRef(timeSummary);
-  const {cycle, time} = currentCycle;
+  const { cycle, time } = currentCycle;
   const [cyTimeCount, updateTimeCount] = useState(time);
 
+  const startDingSound = new Audio(startDing);
+  const startFinalDingSound = new Audio(startFinalDing);
+
+  const playDingAudio = (segs) => {
+    if (segs <= 4) {
+      if (segs <= 1) {
+        return startFinalDingSound.play();
+      }
+      return startDingSound.play();
+    }
+  }
+
   const onTimeUpdate = time => {
+    playDingAudio(segsToNum(time))
     updateTimeCount(time);
     totalTimeCount.current = totalTimeCount.current - 1;
   };
@@ -57,16 +73,16 @@ const WorkView: FC<WorkViewProps> = ({
     cyTimer
     .current
     .init()
-    .then(() =>
-      tabataIterator(
+    .then(() => {
+      return tabataIterator(
         cycles[currentSet].length - 1,
         internalCyIndex,
         updateTimeCount,
         dispatch,
         currentSet,
         cycles,
-      )
-    );
+      );
+    });
   }, [currentSet, internalCyIndex]);
 
   return (

@@ -46,7 +46,6 @@ const WorkView: FC<WorkViewProps> = ({
   const totalTimeCount = useRef(timeSummary);
   const { cycle, time } = currentCycle;
   const [cyTimeCount, updateTimeCount] = useState(time);
-  const [isFinalPlayed, setFinalPlayed] = useState(false);
 
   const playSound = (segs: number) => {
     if (segs <= 3 && dingSound != null) {
@@ -83,7 +82,7 @@ const WorkView: FC<WorkViewProps> = ({
         cycles,
       );
     });
-  }, [currentSet, internalCyIndex, isFinalPlayed]);
+  }, [currentSet, internalCyIndex]);
 
   return (
     <>

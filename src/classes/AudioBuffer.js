@@ -36,7 +36,6 @@ export default class AudioBuffer {
               return;
           }
           this.buffer = buffer;
-          // this.source.connect(this.context.destination);  
       });
     }
     request.onerror = function() {console.log('BufferLoader: XHR error')};

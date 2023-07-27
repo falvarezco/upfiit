@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   updateConfigValues,
   generateWorkCycles,
@@ -7,13 +7,17 @@ import {
   WORK_STATUS,
   FINISHED_STATUS,
 } from './store/tabata';
-import {RootState} from './store';
-import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from './store';
+import { useSelector, useDispatch } from 'react-redux';
 import ConfigView from './components/ConfigView';
 import FinishedTabata from './components/FinishedTabata';
 import WorkView from './components/WorkView';
 import Layout from './components/Layout';
 import Button from './components/Button';
+import AudioBuffer from './classes/AudioBuffer';
+
+const DING_SOUND_URL = require('./audio/start-ding.mp3');
+const FINAL_DING_SOUND_URL = require('./audio/start-final-ding.mp3');
 
 const App = () => {
   const {
@@ -24,11 +28,35 @@ const App = () => {
     totalTime,
     currentCycle,
     currentSet,
-  } = useSelector(({tabataState}: RootState) => tabataState);
-
+  } = useSelector(({ tabataState }: RootState) => tabataState);
+  const [dingSound, setDingSound] = useState<any>(null);
+  const [finalDingSound, setFinalDingSound] = useState<any>(null);
+  const [audioInitialized, onInitAudio] = useState(false);
   const dispatch = useDispatch();
-  const onHandleConfigUpdate = ({name, newValue}) => dispatch(updateConfigValues({name, newValue}));
-  const onTabataWorkInit = () => dispatch(generateWorkCycles());
+
+  useEffect(() => {
+    if (!dingSound || !finalDingSound) {
+      return;
+    }
+    // Initialize Classes
+    dingSound.init();
+    finalDingSound.init();
+  }, [dingSound, finalDingSound])
+
+  const onHandleConfigUpdate = ({name, newValue}) => {
+    if (!audioInitialized) {
+      setDingSound(new AudioBuffer(DING_SOUND_URL, 0, 1));
+      setFinalDingSound(new AudioBuffer(FINAL_DING_SOUND_URL, 0, 1));
+      onInitAudio(true);
+    }
+  
+    dispatch(updateConfigValues({name, newValue}))
+  };
+
+  const onTabataWorkInit = () => {
+    dispatch(generateWorkCycles());
+  };
+
   const onCreateAnotherTabata = () => dispatch(setAppStatus(CONFIG_STATUS));
 
   return (
@@ -42,7 +70,7 @@ const App = () => {
         />
       }
       {status === WORK_STATUS &&
-        <WorkView 
+        <WorkView
           currentCycle={currentCycle}
           cycles={workCycles}
           config={configValues}
@@ -50,6 +78,8 @@ const App = () => {
           internalCyIndex={internalCyIndex}
           timeSummary={totalTime}
           totalSets={configValues.sets}
+          dingSound={dingSound}
+          finalDingSound={finalDingSound}
         />
       }
       {status === FINISHED_STATUS &&

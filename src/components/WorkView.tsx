@@ -14,10 +14,13 @@ interface WorkViewProps {
   internalCyIndex: number,
   config?: InitialConfig,
   cycles: Array<[Cycle]>,
-  currentCycle: Cycle | null,
+  currentCycle: Cycle | any,
   currentSet: number,
   timeSummary: number,
   totalSets: number,
+  // TODO: Add proprer typing matching AudioBuffer Class
+  dingSound: any,
+  finalDingSound: any,
 }
 
 interface CyTimer {
@@ -35,14 +38,26 @@ const WorkView: FC<WorkViewProps> = ({
   currentSet,
   timeSummary,
   totalSets,
+  dingSound,
+  finalDingSound,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const cyTimer:CyTimer = useRef();
+  const cyTimer: CyTimer = useRef();
   const totalTimeCount = useRef(timeSummary);
-  const {cycle, time} = currentCycle;
+  const { cycle, time } = currentCycle;
   const [cyTimeCount, updateTimeCount] = useState(time);
 
+  const playSound = (segs: number) => {
+    if (segs <= 3 && dingSound != null) {
+      if (segs === 1) {
+        return finalDingSound.playSound();
+      }
+      dingSound.playSound();
+    }
+  }
+
   const onTimeUpdate = time => {
+    playSound(segsToNum(time))
     updateTimeCount(time);
     totalTimeCount.current = totalTimeCount.current - 1;
   };
@@ -57,16 +72,16 @@ const WorkView: FC<WorkViewProps> = ({
     cyTimer
     .current
     .init()
-    .then(() =>
-      tabataIterator(
+    .then(() => {
+      return tabataIterator(
         cycles[currentSet].length - 1,
         internalCyIndex,
         updateTimeCount,
         dispatch,
         currentSet,
         cycles,
-      )
-    );
+      );
+    });
   }, [currentSet, internalCyIndex]);
 
   return (

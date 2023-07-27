@@ -57,6 +57,17 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
     onUpdate({name, newValue});
   }
 
+  const onUpdateCheck = (...args) => {
+    const eventProps = args[0];
+    const isMinusButton = args[1];
+
+    if (isMinusButton) {
+      return buttonUpdateValue(eventProps, isMinusButton);
+    }
+
+    buttonUpdateValue(eventProps);
+  }
+
   return (
     <div className={CARD_CLASSES}>
       <header className='flex my-5'>
@@ -64,16 +75,16 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
         <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>
       </header>
       <div className='flex justify-center space-x-4 items-center my-[35]'>
-        <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e, true)}>
+        <a className={BUTTON_CLASSES} onClick={(e) => onUpdateCheck(e, true)} onTouchEnd={(e) => onUpdateCheck(e, true)}>
           <Icon iconName="minus" classes={BUTTON_ICON_CLASSES}/>
         </a>
-        <input 
+        <input
           className='flex-initial w-40 bg-transparent text-white text-6xl text-center focus:outline-none'
           type="number" value={currentValue}
           // onFocus={onCardSelected}
           onChange={(e) => inputUpdate(e)}/>
           {/* TODO: VALIDATE EMPTY VALUES */}
-        <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e)}>
+        <a className={BUTTON_CLASSES} onClick={(e) => onUpdateCheck(e)} onTouchEnd={(e) => onUpdateCheck(e)}>
           <Icon iconName="plus" classes={BUTTON_ICON_CLASSES}/>
         </a>
       </div>

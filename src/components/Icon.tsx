@@ -14,7 +14,7 @@ interface IconProps {
   iconName: string,
 }
 
-const ICON_CLASSES = 'h-7x w-7 text-white';
+const ICON_CLASSES = 'h-7 w-7 text-white';
 
 const Icon: FC<IconProps> = ({classes, iconName}) => {
   const classStyles = classes ? classes : ICON_CLASSES;

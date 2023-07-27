@@ -7,6 +7,7 @@ import {
   setCurrentSet,
   FINISHED_TABATA,
 } from '../store/tabata';
+
 // TODO: Test this
 const tabataIterator = (
   currentSetLength: number,

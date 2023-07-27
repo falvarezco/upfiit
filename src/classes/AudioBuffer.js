@@ -43,15 +43,22 @@ export default class AudioBuffer {
     request.send();
   }
 
-  playSound() {              
-    var source = this.context.createBufferSource();   // creates a sound source
-    source.buffer = this.buffer;                     // tell the source which sound to play
-    source.connect(this.context.destination);          // connect the source to the context's destination (the speakers)
-    const gainNode = this.context.createGain();          // Create a gain node
-    source.connect(gainNode);                     // Connect the source to the gain node
-    gainNode.connect(this.context.destination);        // Connect the gain node to the destination
-    gainNode.gain.value = this._volume;                  // Set the volume
-    source.start(this._time);                           // play the source at the deisred time 0=now    
+  playSound() {
+    // creates a sound source
+    var source = this.context.createBufferSource();   
+    // tell the source which sound to play
+    source.buffer = this.buffer;                      
+    // connect the source to the context's destination (the speakers)
+    source.connect(this.context.destination);        
+    // Create a gain node
+    const gainNode = this.context.createGain();     
+    // Connect the source to the gain node
+    source.connect(gainNode);                     
+    // Connect the gain node to the destination
+    gainNode.connect(this.context.destination);        
+    // Set the volume
+    gainNode.gain.value = this._volume;                  
+    // play the source at the deisred time 0=now
+    source.start(this._time);                           
   }
-
 }

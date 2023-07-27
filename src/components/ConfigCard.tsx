@@ -9,7 +9,7 @@ const BUTTON_CLASSES = `
   delay-50 cursor-pointer
 `;
 
-const BUTTON_ICON_CLASSES = 'stroke-teal-300';
+const BUTTON_ICON_CLASSES = 'h-7 w-7 stroke-teal-300';
 
 const CARD_CLASSES = `
   w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800

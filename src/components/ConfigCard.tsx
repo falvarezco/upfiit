@@ -76,7 +76,7 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
         <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e)}>
           <Icon iconName="plus" classes={BUTTON_ICON_CLASSES}/>
         </a>
-      </div> 
+      </div>
       <p className='text-white text-center capitalize select-none'>{description}</p>
     </div>
   )

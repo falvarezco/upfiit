@@ -9,9 +9,6 @@ import { segsToNum } from '../utils/timeTransformers';
 import tabataIterator from '../utils/tabataIterator';
 import WorkInterval from './WorkInterval';
 import Button from './Button';
-// Audio
-import startDing from '../audio/start-ding.mp3';
-import startFinalDing from '../audio/start-final-ding.mp3';
 
 interface WorkViewProps {
   internalCyIndex: number,
@@ -21,6 +18,9 @@ interface WorkViewProps {
   currentSet: number,
   timeSummary: number,
   totalSets: number,
+  // TODO: Add proprer typing matching AudioBuffer Class
+  dingSound: any,
+  finalDingSound: any,
 }
 
 interface CyTimer {
@@ -38,27 +38,27 @@ const WorkView: FC<WorkViewProps> = ({
   currentSet,
   timeSummary,
   totalSets,
+  dingSound,
+  finalDingSound,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const cyTimer: CyTimer = useRef();
   const totalTimeCount = useRef(timeSummary);
   const { cycle, time } = currentCycle;
   const [cyTimeCount, updateTimeCount] = useState(time);
+  const [isFinalPlayed, setFinalPlayed] = useState(false);
 
-  const startDingSound = new Audio(startDing);
-  const startFinalDingSound = new Audio(startFinalDing);
-
-  const playDingAudio = (segs) => {
-    if (segs <= 4) {
-      if (segs <= 1) {
-        return startFinalDingSound.play();
+  const playSound = (segs: number) => {
+    if (segs <= 3 && dingSound != null) {
+      if (segs === 1) {
+        return finalDingSound.playSound();
       }
-      return startDingSound.play();
+      dingSound.playSound();
     }
   }
 
   const onTimeUpdate = time => {
-    playDingAudio(segsToNum(time))
+    playSound(segsToNum(time))
     updateTimeCount(time);
     totalTimeCount.current = totalTimeCount.current - 1;
   };
@@ -83,7 +83,7 @@ const WorkView: FC<WorkViewProps> = ({
         cycles,
       );
     });
-  }, [currentSet, internalCyIndex]);
+  }, [currentSet, internalCyIndex, isFinalPlayed]);
 
   return (
     <>

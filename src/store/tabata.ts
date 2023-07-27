@@ -4,6 +4,7 @@ import { InitialState, Cycle } from '../types';
 import { numberToSeg } from '../utils/timeTransformers';
 
 // Shared Strings
+// TODO: Standarize the way strings are added e.g all lowercase || uppercase || camelCase
 export const CONFIG_STATUS      = 'CONFIG';
 export const WORK_STATUS        = 'WORK';
 export const FINISHED_STATUS    = 'FINISHED';

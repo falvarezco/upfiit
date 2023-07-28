@@ -20,8 +20,36 @@ export default class AudioBuffer {
   createContext () {
     if (!window) return;
 
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.context = new AudioContext();
+    let usingWebAudio = true;
+
+    try {
+      if (typeof AudioContext !== 'undefined') {
+        this.context = new AudioContext();
+      } else if (typeof webkitAudioContext !== 'undefined') {
+        this.context = new webkitAudioContext();
+      } else {
+        usingWebAudio = false;
+      }
+    } catch(e) {
+      usingWebAudio = false;
+    }
+  
+    // context state at this time is `undefined` in iOS8 Safari
+    if (usingWebAudio && this.context.state === 'suspended') {
+      var resume = function () {
+        this.context.resume();
+
+        setTimeout(function () {
+          if (this.context.state === 'running') {
+            document.body.removeEventListener('touchend', resume, false);
+          }
+        }, 0);
+      };
+
+      document.body.addEventListener('touchend', resume, false);
+    }
+    // window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    // this.context = new AudioContext();
   }
 
   loadSound() {

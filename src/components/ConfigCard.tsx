@@ -59,9 +59,9 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
 
   return (
     <div className={CARD_CLASSES}>
-      <header className='flex my-5'>
+      <header className='flex my-5 items-center'>
         <Icon iconName={name} />
-        <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>
+        <h1 className="text-white w-auto text-2xl ml-2 select-none">{cardTitle}</h1>
       </header>
       <div className='flex justify-center space-x-4 items-center my-[35]'>
         <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e, true)}>

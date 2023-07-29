@@ -9,13 +9,13 @@ interface WorkIntervalProps {
 }
 
 const WorkInterval: FC<WorkIntervalProps> = ({name, time}) => {
-  const isWorkingCy = name === WORK;
-  const cyClasses = `
+  const isAWorkingCycle = name === WORK;
+  const cycleClasses = `
     flex-1 align-items-center w-full p-10 bg-slate-800 border
-    rounded ${isWorkingCy ? 'border-teal-300' : 'border-slate-600'}
+    rounded-lg ${isAWorkingCycle ? 'border-teal-300' : 'border-slate-600'}
   `;
   return (
-    <div className={cyClasses}>
+    <div className={cycleClasses}>
       <header className='flex justify-center'>
         <Icon iconName={name} classes='h-7x w-7 stroke-teal-300'/>
         <h1 className='text-teal-300 px-2 text-2xl'>{capitalize(lowerCase(name))}:</h1>

@@ -89,7 +89,16 @@ const WorkView: FC<WorkViewProps> = ({
       <h1 className="text-white my-5 select-none">Time: {totalMinutesStr(totalTimeCount.current)}</h1>
       <div className="flex flex-col w-full px-10 justify-center">
         {/* Counter Section */}
-        <WorkInterval name={cycle} time={segsToNum(cyTimeCount)}/>
+        <div className="flex flex-row gap-4">
+          <WorkInterval name={cycle} time={segsToNum(cyTimeCount)}/>
+          <div className="flex w-2/12 bg-slate-800 rounded-lg">
+            <ul className="flex flex-col w-full p-4">
+              {cycles[currentSet].map(({ cycle }) => (
+                <li className="w-full border h-auto text-lg text-white">{cycle}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
         {/* Set Counter */}
         <div className=' flex justify-center'>
           <Button onButtonClick={onPauseTimer}>Pause</Button>

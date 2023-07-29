@@ -30,11 +30,13 @@ const ConfigView: FC<ConfigViewProps> = ({
   onWorkInit,
 }) => (
   <>
-    <h1 className='text-white my-5 select-none'>
-      {/* TODO: Move this to utils, this line too long */}
-      {`${totalTimeStr} ${Number.isNaN(timeSummary) || timeSummary === 0 ? '--:--' : totalMinutesStr(timeSummary)}`}
-    </h1>
-    <form className='mb-20 mt-5 w-10/12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>
+    <div className="flex w-10/12 flex-row-reverse">
+      <h1 className='text-white text-xl my-5 select-none'>
+        {/* TODO: Move this to utils, this line too long */}
+        {`${totalTimeStr} ${Number.isNaN(timeSummary) || timeSummary === 0 ? '--:--' : totalMinutesStr(timeSummary)}`}
+      </h1>
+    </div>
+    <form className="mb-20 mt-5 w-10/12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {cards.map(card => card && <ConfigCard key={card.name} value={data[card.name]} {...card} onUpdate={onCardUpdate}/>)}
     </form>
     <Button onButtonClick={onWorkInit}>{startButton}</Button>

@@ -4,7 +4,7 @@ import { NewValue } from './ConfigView';
 import Icon from './Icon';
 
 const BUTTON_CLASSES = `
-  w-8 h-8 min-w-10 flex items-center justify-center
+  w-10 h-10 min-w-10 flex items-center justify-center
   hover:bg-slate-700 bg-slate-600 rounded-full transition ease-in-out
   delay-50 cursor-pointer
 `;
@@ -13,7 +13,7 @@ const BUTTON_ICON_CLASSES = 'h-7 w-7 stroke-teal-300';
 
 const CARD_CLASSES = `
   w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800
-  border border-slate-600 rounded
+  border border-slate-600 rounded-lg
 `;
 
 interface ConfigCardProps {

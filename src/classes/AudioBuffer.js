@@ -21,6 +21,7 @@ export default class AudioBuffer {
     if (!window) return;
 
     let usingWebAudio = true;
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
     try {
       if (typeof AudioContext !== 'undefined') {

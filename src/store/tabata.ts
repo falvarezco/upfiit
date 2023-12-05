@@ -1,5 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuid } from 'uuid';
 import { InitialState, Cycle } from '../types';
 import { numberToSeg } from '../utils/timeTransformers';
 
@@ -94,15 +95,15 @@ const tabataSlice = createSlice({
           // Is the last one
           if (excerciseCounter === excercises - 1) {
             workIntervals.push(
-              {cycle: WORK, time: numberToSeg(work)},
+              {id: uuid(), cycle: WORK, time: numberToSeg(work)},
             );
           // Is a work excercise at the middle of the list (takes into account rest time in between)
           } else {
             workIntervals.push(
-              {cycle: WORK, time: numberToSeg(work)},
+              {id: uuid(), cycle: WORK, time: numberToSeg(work)},
             );
             hasRestBetweenExcercises && workIntervals.push(
-              {cycle: REST_BT_EXCERCISES, time: numberToSeg(restBetweenExcercises)},
+              {id: uuid(), cycle: REST_BT_EXCERCISES, time: numberToSeg(restBetweenExcercises)},
             );
           }
         }

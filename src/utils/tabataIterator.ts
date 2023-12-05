@@ -51,7 +51,7 @@ const tabataIterator = (
   }
 
   if (isLastCy) {
-    return dispatch({type: FINISHED_TABATA});
+    return dispatch({ type: FINISHED_TABATA });
   }
 
   resetNextCount(nextCycle.time);

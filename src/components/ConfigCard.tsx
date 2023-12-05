@@ -4,7 +4,7 @@ import { NewValue } from './ConfigView';
 import Icon from './Icon';
 
 const BUTTON_CLASSES = `
-  w-8 h-8 min-w-10 flex items-center justify-center
+  w-10 h-10 min-w-10 flex items-center justify-center
   hover:bg-slate-700 bg-slate-600 rounded-full transition ease-in-out
   delay-50 cursor-pointer
 `;
@@ -13,7 +13,7 @@ const BUTTON_ICON_CLASSES = 'h-7 w-7 stroke-teal-300';
 
 const CARD_CLASSES = `
   w-auto py-[27] px-[17] flex flex-col items-center bg-slate-800
-  border border-slate-600 rounded
+  border border-slate-600 rounded-lg
 `;
 
 interface ConfigCardProps {
@@ -57,25 +57,14 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
     onUpdate({name, newValue});
   }
 
-  const onUpdateCheck = (...args) => {
-    const eventProps = args[0];
-    const isMinusButton = args[1];
-
-    if (isMinusButton) {
-      return buttonUpdateValue(eventProps, isMinusButton);
-    }
-
-    buttonUpdateValue(eventProps);
-  }
-
   return (
     <div className={CARD_CLASSES}>
-      <header className='flex my-5'>
+      <header className='flex my-5 items-center'>
         <Icon iconName={name} />
-        <h1 className="text-white text-xl ml-2 select-none">{cardTitle}</h1>
+        <h1 className="text-white w-auto text-2xl ml-2 select-none">{cardTitle}</h1>
       </header>
       <div className='flex justify-center space-x-4 items-center my-[35]'>
-        <a className={BUTTON_CLASSES} onClick={(e) => onUpdateCheck(e, true)} onTouchEnd={(e) => onUpdateCheck(e, true)}>
+        <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e, true)}>
           <Icon iconName="minus" classes={BUTTON_ICON_CLASSES}/>
         </a>
         <input
@@ -84,7 +73,7 @@ const ConfigCard: FC<ConfigCardProps> = ({name, description, value, onUpdate}): 
           // onFocus={onCardSelected}
           onChange={(e) => inputUpdate(e)}/>
           {/* TODO: VALIDATE EMPTY VALUES */}
-        <a className={BUTTON_CLASSES} onClick={(e) => onUpdateCheck(e)} onTouchEnd={(e) => onUpdateCheck(e)}>
+        <a className={BUTTON_CLASSES} onClick={(e) => buttonUpdateValue(e)}>
           <Icon iconName="plus" classes={BUTTON_ICON_CLASSES}/>
         </a>
       </div>

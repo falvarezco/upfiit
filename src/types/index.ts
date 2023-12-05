@@ -8,6 +8,7 @@ interface InitialConfig {
 }
 
 interface Cycle {
+  id: string,
   cycle: string,
   time: number,
 }

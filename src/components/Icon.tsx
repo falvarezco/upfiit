@@ -7,6 +7,9 @@ import {
   RefreshIcon,
   MinusIcon,
   PlusIcon,
+  PauseIcon,
+  PlayIcon,
+  XCircleIcon,
 } from '@heroicons/react/outline';
 
 interface IconProps {
@@ -35,6 +38,12 @@ const Icon: FC<IconProps> = ({classes, iconName}) => {
       return <MinusIcon className={classStyles}/>
     case 'plus':
       return <PlusIcon className={classStyles}/>
+    case 'pause':
+      return <PauseIcon className={classStyles}/>
+    case 'play':
+      return <PlayIcon className={classStyles}/>
+    case 'close':
+      return <XCircleIcon className={classStyles}/> 
     default:
       return;
   }

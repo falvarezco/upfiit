@@ -6,7 +6,7 @@ interface FinishedTabataProps {
 
 const FinishedTabata: FC<FinishedTabataProps> = ({children}) => (
   <div>
-    <h1 className='text-white text-center'>{`Tabata Completed! :)`}</h1>
+    <h1 className='text-white text-3xl text-center py-20'>{`Tabata Completed! :)`}</h1>
     {children}
   </div>
 )

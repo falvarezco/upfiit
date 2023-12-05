@@ -31,7 +31,7 @@ const App = () => {
   } = useSelector(({ tabataState }: RootState) => tabataState);
   const [dingSound, setDingSound] = useState<any>(null);
   const [finalDingSound, setFinalDingSound] = useState<any>(null);
-  const [audioInitialized, onInitAudio] = useState(false);
+  const [audioInitialized, onAllowAudio] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -44,15 +44,20 @@ const App = () => {
   }, [dingSound, finalDingSound])
 
   const onHandleConfigUpdate = ({name, newValue}) => {
-    if (!audioInitialized) {
-      setDingSound(new AudioBuffer(DING_SOUND_URL, 0, 1));
-      setFinalDingSound(new AudioBuffer(FINAL_DING_SOUND_URL, 0, 1));
-      onInitAudio(true);
-    }
-  
     dispatch(updateConfigValues({name, newValue}))
   };
 
+  const audioConfigToggle = () => {
+    if (!audioInitialized) {
+      // Load Sounds with given user permission
+      setDingSound(new AudioBuffer(DING_SOUND_URL, 0, 1));
+      setFinalDingSound(new AudioBuffer(FINAL_DING_SOUND_URL, 0, 1));
+      // Set initAudio Flag to true
+      onAllowAudio(true);
+    }
+  }
+
+  
   const onTabataWorkInit = () => {
     dispatch(generateWorkCycles());
   };
@@ -63,7 +68,9 @@ const App = () => {
     <Layout>
       {status === CONFIG_STATUS &&
         <ConfigView
+          audioInitialized={audioInitialized}
           timeSummary={totalTime}
+          onAllowAudio={audioConfigToggle}
           onCardUpdate={onHandleConfigUpdate}
           onWorkInit={onTabataWorkInit}
           data={configValues}

@@ -12,7 +12,6 @@ import WorkInterval from './WorkInterval';
 import Button from './Button';
 import Icon from './Icon';
 
-
 const END_BUTTON_CLASSES = "flex gap-3 align-middle px-8 py-5 rounded-full background-opacity-0 border border-red-400 text-red-400 justify-center items-center hover:opacity-[0.8] transition ease-in-out delay-50 cursor-pointer";
 const CONTROL_BUTTON_CLASSES = "flex gap-3 align-middle bg-teal-300 px-8 py-5 rounded-full align-middle justify-center items-center hover:opacity-[0.8] transition ease-in-out delay-50 cursor-pointer"
 const BUTTON_ICON_CLASSES = 'h-10 w-10 stroke-slate-800';

@@ -17,21 +17,38 @@ const {
 } = APP_STRINGS.config;
 
 interface ConfigViewProps {
+  audioInitialized: boolean,
   timeSummary: number,
   data: InitialConfig,
   onCardUpdate: (value: NewValue) => void,
   onWorkInit: EventHandler<MouseEvent>,
+  onInitAudio: any,
+}
+
+// Provisional Fix for IOS mobile devices
+const AudioRequestConfirm = ({onUpdate}: any): any => {
+  return (
+    <div className="bg-black absolute w-full h-full text-center flex justify-center items-center">
+      <form className="flex gap-3">
+        <label className="text-white" htmlFor="audioCheck">Allow Audio Sounds</label>
+        <input id="audioCheck" type="checkbox" onChange={onUpdate}/>
+      </form>
+    </div>
+  )
 }
 
 const ConfigView: FC<ConfigViewProps> = ({
+  audioInitialized,
   timeSummary,
   data,
   onCardUpdate,
   onWorkInit,
+  onInitAudio,
 }) => (
   <>
+    {!audioInitialized && <AudioRequestConfirm onUpdate={onInitAudio}/>}
     <div className="flex w-10/12 flex-row-reverse">
-      <h1 className='text-white text-xl my-5 select-none'>
+      <h1 className="text-white text-2xl my-5 select-none">
         {/* TODO: Move this to utils, this line too long */}
         {`${totalTimeStr} ${Number.isNaN(timeSummary) || timeSummary === 0 ? '--:--' : totalMinutesStr(timeSummary)}`}
       </h1>

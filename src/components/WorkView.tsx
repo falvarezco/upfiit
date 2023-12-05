@@ -85,32 +85,44 @@ const WorkView: FC<WorkViewProps> = ({
   }, [currentSet, internalCyIndex]);
 
   return (
-    <>
-      <h1 className="text-white my-5 select-none">Time: {totalMinutesStr(totalTimeCount.current)}</h1>
-      <div className="flex flex-col w-full px-10 justify-center">
+    <section className="w-full h-full flex flex-col justify-between">
+      <div className="flex flex-row-reverse px-20">
+        <h1 className="text-white text-2xl my-5 select-none">
+          Time Remaining: {totalMinutesStr(totalTimeCount.current)}
+        </h1>
+      </div>
+      <div className="flex flex-col w-full h-full px-10">
         {/* Counter Section */}
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row h-full gap-4 align-middle">
           <WorkInterval name={cycle} time={segsToNum(cyTimeCount)}/>
-          <div className="flex w-2/12 bg-slate-800 rounded-lg">
-            <ul className="flex flex-col w-full p-4">
-              {cycles[currentSet].map(({ cycle }) => (
-                <li className="w-full border h-auto text-lg text-white">{cycle}</li>
-              ))}
-            </ul>
-          </div>
+          {/* Work Preview */}
+          {cycle !== PREPARATION ?(
+            <div className="flex flex-col w-2/12 bg-slate-800 rounded-lg border border-slate-600 p-3">
+              <div className="flex bg-slate-600 rounded-full w-full justify-center p-2">
+                <h1 className='text-white text-xl text-center'>
+                  {cycle !== PREPARATION ? `${currentSet}/${totalSets} Sets` : ''}
+                </h1>
+              </div>
+              <ul className="flex flex-col w-full p-4">
+                {cycles[currentSet].map(({ cycle, time }) => (
+                  <li key={currentSet} className="flex w-full gap-2 h-auto text-lg text-white py-2 items-center">
+                    <section className="flex w-[38px] h-[38px] bg-slate-600 rounded-full text-white items-center justify-center">
+                      {segsToNum(time)}
+                    </section>
+                    {cycle}
+                  </li>
+                ))}
+              </ul>
+            </div> 
+          ) : null}
         </div>
         {/* Set Counter */}
         <div className=' flex justify-center'>
           <Button onButtonClick={onPauseTimer}>Pause</Button>
           <Button onButtonClick={onResumeTimer}>Resume</Button>
         </div>
-        <div className="flex w-full justify-center p-10">
-          <h1 className='text-white text-center'>
-            {cycle !== PREPARATION ? `${currentSet}/${totalSets} Sets` : ''}
-          </h1>
-        </div>
       </div>
-    </>
+    </section>
   )
 };
 

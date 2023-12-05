@@ -44,14 +44,16 @@ const App = () => {
   }, [dingSound, finalDingSound])
 
   const onHandleConfigUpdate = ({name, newValue}) => {
-    if (!audioInitialized) {
-      setDingSound(new AudioBuffer(DING_SOUND_URL, 0, 1));
-      setFinalDingSound(new AudioBuffer(FINAL_DING_SOUND_URL, 0, 1));
-      onInitAudio(true);
-    }
-  
     dispatch(updateConfigValues({name, newValue}))
   };
+
+  const StartAudioConfig = () => {
+    // Load Sounds with given user permission
+    setDingSound(new AudioBuffer(DING_SOUND_URL, 0, 1));
+    setFinalDingSound(new AudioBuffer(FINAL_DING_SOUND_URL, 0, 1));
+    // Set initAudio Flag to true
+    onInitAudio(true);
+  }
 
   const onTabataWorkInit = () => {
     dispatch(generateWorkCycles());
@@ -63,7 +65,9 @@ const App = () => {
     <Layout>
       {status === CONFIG_STATUS &&
         <ConfigView
+          audioInitialized={audioInitialized}
           timeSummary={totalTime}
+          onInitAudio={StartAudioConfig}
           onCardUpdate={onHandleConfigUpdate}
           onWorkInit={onTabataWorkInit}
           data={configValues}

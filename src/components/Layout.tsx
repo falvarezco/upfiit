@@ -1,15 +1,15 @@
-import React, { FC, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import Header from './Header';
 
 interface LayoutProps {
   children: ReactNode,
 }
 
-const Layout: FC<LayoutProps> = ({children}) => {
+const Layout = ({children}: LayoutProps) => {
   return (
-    <div className='flex items-center h-inherit flex-col'>
+    <div className='flex h-full items-center h-inherit flex-col'>
       <Header />
-      <div className='flex w-full items-center h-inherit flex-col'>
+      <div className='flex w-full h-full items-center h-inherit flex-col'>
         {children}
       </div>
     </div>
